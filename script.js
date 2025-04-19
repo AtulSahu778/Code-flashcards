@@ -162,13 +162,31 @@ const flashCards = [
   
   // State variables
   let currentIndex = 0;
-  
+  let remainingCards = [];
+
   // Initialize flashcards data
   function initializeFlashcards() {
-      totalCardsEl.textContent = flashCards.length;
+      resetDeck();
       updateCard();
   }
-  
+
+  // Reset and shuffle the deck
+  function resetDeck() {
+      remainingCards = [...Array(flashCards.length).keys()];
+      shuffleArray(remainingCards);
+      currentIndex = 0;
+      totalCardsEl.textContent = remainingCards.length;
+      updateNavigationState();
+  }
+
+  // Fisher-Yates shuffle algorithm
+  function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
+  }
+
   // Format code content with syntax highlighting
   function formatCodeContent(content) {
       const codeMatch = content.match(/```([a-zA-Z]+)\n([\s\S]*?)```/);
@@ -192,16 +210,17 @@ const flashCards = [
   
   // Update card
   function updateCard() {
-      if (!flashCards || !flashCards.length) {
+      if (!flashCards || !flashCards.length || remainingCards.length === 0) {
           console.error('No flashcards available');
           return;
       }
       
-      const currentCard = flashCards[currentIndex];
+      const currentCardIndex = remainingCards[currentIndex];
+      const currentCard = flashCards[currentCardIndex];
       
       // Update card counter and progress bar
       currentCardEl.textContent = currentIndex + 1;
-      const progressPercentage = ((currentIndex + 1) / flashCards.length) * 100;
+      const progressPercentage = ((currentIndex + 1) / remainingCards.length) * 100;
       progressBar.style.width = `${progressPercentage}%`;
       
       // Update front and back of card
@@ -222,7 +241,7 @@ const flashCards = [
   
   // Navigation functions
   function showNext() {
-      if (currentIndex < flashCards.length - 1) {
+      if (currentIndex < remainingCards.length - 1) {
           currentIndex++;
           updateCard();
           updateNavigationState();
@@ -239,7 +258,7 @@ const flashCards = [
   
   function updateNavigationState() {
       prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex === flashCards.length - 1;
+      nextBtn.disabled = currentIndex === remainingCards.length - 1;
   }
   
   // Event Listeners
@@ -251,11 +270,14 @@ const flashCards = [
   // Keyboard shortcuts
   document.addEventListener('keydown', function(e) {
       if (e.key === ' ' || e.key === 'Spacebar') {
+          e.preventDefault();
           toggleCard();
       } else if (e.key === 'ArrowRight') {
           showNext();
       } else if (e.key === 'ArrowLeft') {
           showPrevious();
+      } else if (e.key === 'r') {
+          resetDeck();
       }
   });
   
