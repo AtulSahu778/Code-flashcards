@@ -1,91 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlashCards</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="flashcards-app">
-        <!-- App Header -->
-        <div class="flashcards-header">
-            <h1>FlashCards</h1>
-            <p>Test your knowledge with interactive flashcards</p>
-        </div>
+        <header class="flashcards-header">
+            <h1>Code FlashCards</h1>
+            <p>Master programming concepts</p>
+        </header>
 
-        <!-- Settings Section -->
         <div class="flashcards-settings">
             <div class="deck-info">
-                <div class="deck-counter">Card <span id="current-card">1</span> of <span id="total-cards">10</span></div>
-                <div class="deck-progress">
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: 10%;"></div>
-                    </div>
+                <div class="deck-counter">
+                    <span id="current-card">1</span>/<span id="total-cards">10</span>
                 </div>
-            </div>
-            <div class="theme-toggle" id="theme-toggle">
-                <div class="theme-toggle-handle"></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 10%;"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="flashcard-main">
+        <main class="flashcard-main">
             <div class="scene">
                 <div class="flashcard-container">
                     <div class="flashcard" id="flashcard">
                         <div class="front">
-                            <div class="card-decoration"></div>
-                            <div class="card-content">Click Next for Question</div>
+                            <div class="card-content"></div>
                         </div>
                         <div class="back">
-                            <div class="card-decoration"></div>
-                            <div class="card-content">Answer will appear here</div>
+                            <div class="card-content"></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="flip-indicator">
-                <svg class="flip-indicator-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 16V4m0 0L3 8m4-4l4 4"></path>
-                    <path d="M17 8v12m0 0l4-4m-4 4l-4-4"></path>
-                </svg>
-                <span>Tap card or click Flip to reveal</span>
-            </div>
-
             <div class="controls">
                 <button class="btn btn-secondary" id="prev-btn">
-                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 18l-6-6 6-6"></path>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    Previous
+                    Prev
                 </button>
-                <button class="btn" id="flip-btn">Flip Card</button>
+                <button class="btn" id="flip-btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 8H12M8 4V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    Flip
+                </button>
                 <button class="btn btn-secondary" id="next-btn">
                     Next
-                    <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 18l6-6-6-6"></path>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
             </div>
-
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stat-value" id="correct-count">0</div>
-                    <div class="stat-label">Correct</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="remaining-count">10</div>
-                    <div class="stat-label">Remaining</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="incorrect-count">0</div>
-                    <div class="stat-label">Incorrect</div>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script src="script.js"></script>

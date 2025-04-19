@@ -156,159 +156,107 @@ const flashCards = [
   const prevBtn = document.getElementById('prev-btn');
   const flipBtn = document.getElementById('flip-btn');
   const flashcard = document.getElementById('flashcard');
-  const themeToggle = document.getElementById('theme-toggle');
   const currentCardEl = document.getElementById('current-card');
   const totalCardsEl = document.getElementById('total-cards');
   const progressBar = document.querySelector('.progress-bar');
-  const correctCountEl = document.getElementById('correct-count');
-  const remainingCountEl = document.getElementById('remaining-count');
-  const incorrectCountEl = document.getElementById('incorrect-count');
   
   // State variables
   let currentIndex = 0;
-  let correctCount = 0;
-  let incorrectCount = 0;
   
   // Initialize flashcards data
   function initializeFlashcards() {
-    totalCardsEl.textContent = flashCards.length;
-    remainingCountEl.textContent = flashCards.length;
-    updateCard();
+      totalCardsEl.textContent = flashCards.length;
+      updateCard();
   }
   
   // Format code content with syntax highlighting
   function formatCodeContent(content) {
-    // Extract code block if it exists
-    const codeMatch = content.match(/```([a-zA-Z]+)\n([\s\S]*?)```/);
-    if (codeMatch) {
-      const language = codeMatch[1];
-      const code = codeMatch[2].trim();
-      const textContent = content.replace(/```[a-zA-Z]+\n[\s\S]*?```/, '').trim();
-      
-      return `
-        <div class="content-text">${textContent}</div>
-        <div class="code-container">
-          <div class="code-header">
-            <span class="code-language">${language}</span>
-          </div>
-          <pre><code class="language-${language}">${code}</code></pre>
-        </div>
-      `;
-    }
-    return content;
+      const codeMatch = content.match(/```([a-zA-Z]+)\n([\s\S]*?)```/);
+      if (codeMatch) {
+          const language = codeMatch[1];
+          const code = codeMatch[2].trim();
+          const textContent = content.replace(/```[a-zA-Z]+\n[\s\S]*?```/, '').trim();
+          
+          return `
+              <div class="content-text">${textContent}</div>
+              <div class="code-container">
+                  <div class="code-header">
+                      <span class="code-language">${language}</span>
+                  </div>
+                  <pre><code class="language-${language}">${code}</code></pre>
+              </div>
+          `;
+      }
+      return content;
   }
   
-  // Update card content
+  // Update card
   function updateCard() {
-    if (currentIndex >= flashCards.length) {
-      currentIndex = 0;
-    }
-    if (currentIndex < 0) {
-      currentIndex = flashCards.length - 1;
-    }
-  
-    const currentCard = flashCards[currentIndex];
-    
-    // Update card counter and progress bar
-    currentCardEl.textContent = currentIndex + 1;
-    const progressPercentage = ((currentIndex + 1) / flashCards.length) * 100;
-    progressBar.style.width = `${progressPercentage}%`;
-    
-    // Update front and back of card
-    const frontContent = document.querySelector('.front .card-content');
-    const backContent = document.querySelector('.back .card-content');
-    
-    frontContent.innerHTML = `
-      <div class="card-badge">${currentCard.category}</div>
-      ${formatCodeContent(currentCard.question)}
-    `;
-    
-    backContent.innerHTML = `
-      <div class="card-badge">${currentCard.category}</div>
-      ${formatCodeContent(currentCard.answer)}
-    `;
-    
-    // Reset card to front side
-    flashcard.classList.remove('flipped');
-  }
-  
-  // Navigate to next card
-  function showNext() {
-    currentIndex++;
-    updateCard();
-  }
-  
-  // Navigate to previous card
-  function showPrevious() {
-    currentIndex--;
-    updateCard();
+      if (!flashCards || !flashCards.length) {
+          console.error('No flashcards available');
+          return;
+      }
+      
+      const currentCard = flashCards[currentIndex];
+      
+      // Update card counter and progress bar
+      currentCardEl.textContent = currentIndex + 1;
+      const progressPercentage = ((currentIndex + 1) / flashCards.length) * 100;
+      progressBar.style.width = `${progressPercentage}%`;
+      
+      // Update front and back of card
+      const frontContent = document.querySelector('.front .card-content');
+      const backContent = document.querySelector('.back .card-content');
+      
+      frontContent.innerHTML = formatCodeContent(currentCard.question);
+      backContent.innerHTML = formatCodeContent(currentCard.answer);
+      
+      // Reset card to front side
+      flashcard.classList.remove('flipped');
   }
   
   // Toggle card flip
   function toggleCard() {
-    flashcard.classList.toggle('flipped');
+      flashcard.classList.toggle('flipped');
   }
   
-  // Toggle dark/light theme
-  function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    themeToggle.classList.toggle('dark');
+  // Navigation functions
+  function showNext() {
+      if (currentIndex < flashCards.length - 1) {
+          currentIndex++;
+          updateCard();
+          updateNavigationState();
+      }
   }
   
-  // Mark current card
-  function markCard(isCorrect) {
-    if (isCorrect) {
-      correctCount++;
-      correctCountEl.textContent = correctCount;
-    } else {
-      incorrectCount++;
-      incorrectCountEl.textContent = incorrectCount;
-    }
-    
-    const remainingCount = flashCards.length - (correctCount + incorrectCount);
-    remainingCountEl.textContent = remainingCount;
-    
-    // Move to next card
-    showNext();
+  function showPrevious() {
+      if (currentIndex > 0) {
+          currentIndex--;
+          updateCard();
+          updateNavigationState();
+      }
+  }
+  
+  function updateNavigationState() {
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === flashCards.length - 1;
   }
   
   // Event Listeners
-  flipBtn.addEventListener('click', toggleCard);
   nextBtn.addEventListener('click', showNext);
   prevBtn.addEventListener('click', showPrevious);
-  themeToggle.addEventListener('click', toggleTheme);
+  flipBtn.addEventListener('click', toggleCard);
   flashcard.addEventListener('click', toggleCard);
   
-  // Additional event listeners for rating cards
+  // Keyboard shortcuts
   document.addEventListener('keydown', function(e) {
-    if (e.key === ' ' || e.key === 'Spacebar') {
-      toggleCard();
-    } else if (e.key === 'ArrowRight') {
-      showNext();
-    } else if (e.key === 'ArrowLeft') {
-      showPrevious();
-    } else if (e.key === '1') {
-      markCard(false);
-    } else if (e.key === '2') {
-      markCard(true);
-    }
-  });
-
-  document.addEventListener('DOMContentLoaded', function() {
-    function checkOverflow() {
-      const contentElements = document.querySelectorAll('.card-content');
-      contentElements.forEach(el => {
-        if (el.scrollHeight > el.clientHeight) {
-          el.classList.add('overflow');
-        } else {
-          el.classList.remove('overflow');
-        }
-      });
-    }
-    
-    // Check on load and when card flips
-    checkOverflow();
-    document.getElementById('flashcard').addEventListener('transitionend', checkOverflow);
+      if (e.key === ' ' || e.key === 'Spacebar') {
+          toggleCard();
+      } else if (e.key === 'ArrowRight') {
+          showNext();
+      } else if (e.key === 'ArrowLeft') {
+          showPrevious();
+      }
   });
   
   // Initialize the app
